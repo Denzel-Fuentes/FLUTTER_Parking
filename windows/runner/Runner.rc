@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "retoatrevete" "\0"
+            VALUE "FileDescription", "parking_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "retoatrevete" "\0"
+            VALUE "InternalName", "parking_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "retoatrevete.exe" "\0"
-            VALUE "ProductName", "retoatrevete" "\0"
+            VALUE "OriginalFilename", "parking_app.exe" "\0"
+            VALUE "ProductName", "parking_app" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

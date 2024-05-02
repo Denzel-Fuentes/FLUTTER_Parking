@@ -1,3 +1,6 @@
+lib/firebase_options.dart
+firebase.json
+
 # Miscellaneous
 *.class
 *.log
@@ -15,6 +18,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line

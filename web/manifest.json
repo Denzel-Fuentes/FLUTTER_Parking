@@ -1,6 +1,6 @@
 {
-    "name": "retoatrevete",
-    "short_name": "retoatrevete",
+    "name": "parking_app",
+    "short_name": "parking_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
