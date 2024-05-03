@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:parking_app/RegistroScreen.dart';
 import 'package:parking_app/Welcome.dart'; // Importa la pantalla de bienvenida
-import 'package:parking_app/AdminDashboard.dart';
+import 'package:parking_app/admin/AdminDashboard.dart';
 import 'package:parking_app/animation/FadeAnimation.dart';
 import 'package:parking_app/main_screen.dart';
 
@@ -238,7 +238,6 @@ class _LoginDefState extends State<LoginDef> {
                             ),
                           ),
                         ),
-                        
                       ],
                     ),
                   ),
