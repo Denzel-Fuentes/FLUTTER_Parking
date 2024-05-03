@@ -4,6 +4,7 @@ import 'package:parking_app/RegistroScreen.dart';
 import 'package:parking_app/Welcome.dart'; // Importa la pantalla de bienvenida
 import 'package:parking_app/AdminDashboard.dart';
 import 'package:parking_app/animation/FadeAnimation.dart';
+import 'package:parking_app/main_screen.dart';
 
 class LoginDef extends StatefulWidget {
   const LoginDef({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class _LoginDefState extends State<LoginDef> {
       // Redirección para usuarios móviles o credenciales incorrectas
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Welcome()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     }
   }
@@ -199,7 +200,7 @@ class _LoginDefState extends State<LoginDef> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 10),
                         FadeAnimation(
                           1.5,
                           Container(
@@ -237,7 +238,7 @@ class _LoginDefState extends State<LoginDef> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10)
+                        
                       ],
                     ),
                   ),
