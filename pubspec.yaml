@@ -30,6 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  simple_animations: ^3.1.1
+  fl_chart: ^0.50.0 
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -43,6 +46,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  fluttertoast: ^8.2.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -61,6 +66,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/img/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
