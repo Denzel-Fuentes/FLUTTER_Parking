@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 
 class OffersProposeTAB extends StatefulWidget {
   const OffersProposeTAB({super.key});
-
   @override
   State<OffersProposeTAB> createState() => _OffersProposeTABState();
 }
