@@ -1,4 +1,3 @@
-
 class User {
   final String? id;
   final String fullName;
@@ -26,7 +25,6 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,
       'fullname': fullName,
       'password': password,
       'phone': phone,

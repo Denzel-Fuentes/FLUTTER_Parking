@@ -14,17 +14,16 @@ class Parking {
     required this.location,
   });
 
-  factory Parking.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<String, dynamic>;
+  factory Parking.fromJson(Map<String, dynamic> json) {
     return Parking(
-      id: doc.id,
-      userId: data['user'],
-      name: data['name'],
-      location: Location.fromJson(data['location']),
+      id: json["_id"],
+      userId: json['user'],
+      name: json['name'],
+      location: Location.fromJson(json['location']),
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'user': userId,
       'name': name,
