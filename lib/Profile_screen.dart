@@ -1,75 +1,107 @@
 import 'package:flutter/material.dart';
-import 'package:parking_app/ListParking.dart';
-import 'package:parking_app/ListVehicle.dart';
-import 'package:parking_app/login_def.dart';
-
+import 'package:parking_app/list_garages.dart';
+import 'package:parking_app/list_offers.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color textColor = Colors.black;
     Color lightGray = Colors.grey.shade300;
- 
+
     return Scaffold(
+      backgroundColor: Colors.white, // Set background color to white
+      appBar: AppBar(
+        title: Text('Perfil'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+          Center(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Cuenta',
-                    style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: textColor)),
-                Divider(color: lightGray)
+                SizedBox(height: 16), // Top padding for the icon
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: lightGray,
+                  ),
+                  child: Icon(Icons.person,
+                      size: 80.0, color: textColor), // User icon
+                ),
+                SizedBox(height: 8), // Space between the icon and the text
+                Text(
+                  'Nombre del Usuario',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
+                ),
+                SizedBox(height: 16), // Space before the subtitle
               ],
             ),
           ),
-
+          _buildSubtitle('Información', textColor),
           Expanded(
             child: ListView(
               children: [
-                _buildSubtitle('Información', textColor),
                 _buildListTile(
-                  title: 'Mis Vehículos',
+                  title: 'Registrar vehículo',
                   icon: Icons.directions_car,
+                  textColor: textColor,
+                  onTap: () {},
+                ),
+                Divider(color: lightGray),
+                _buildListTile(
+                  title: 'Añadir oferta',
+                  icon: Icons.add_circle_outline,
                   textColor: textColor,
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ListVehicleScreen()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ListOffersScreen()), // Asegúrate de que AddOfferScreen esté definido y disponible
                     );
                   },
                 ),
                 Divider(color: lightGray),
                 _buildListTile(
-                  title: 'Mis Garajes',
+                  title: 'Publicar oferta',
+                  icon: Icons.public,
+                  textColor: textColor,
+                  onTap: () {},
+                ),
+                Divider(color: lightGray),
+                _buildListTile(
+                  title: 'Mis garajes',
                   icon: Icons.local_parking,
                   textColor: textColor,
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ListParkingScreen()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ListGaragesScreen()), // Asegúrate de que AddOfferScreen esté definido y disponible
                     );
                   },
                 ),
-                
                 Divider(color: lightGray),
                 _buildListTile(
+                  title: 'Puntuación',
+                  icon: Icons.star,
+                  textColor: textColor,
+                  onTap: () {},
+                ),
+                Divider(color: lightGray),
+                _buildListTileNoArrow(
                   title: 'Cerrar sesión',
                   icon: Icons.exit_to_app,
                   textColor: Colors.red,
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginDef()),
-                      (Route<dynamic> route) => false,
-                    );
-                  },
+                  onTap: () {},
                 ),
               ],
             ),
@@ -81,7 +113,7 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildSubtitle(String title, Color textColor) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Text(
         title,
         style: TextStyle(
@@ -90,31 +122,21 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildUserTile({
-    required String username,
+  Widget _buildListTile({
+    required String title,
+    required IconData icon,
     required Color textColor,
-    required Color lightGray,
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: CircleAvatar(
-        radius: 20,
-        child: Icon(Icons.person, size: 20, color: Colors.blue),
-        backgroundColor: lightGray,
-      ),
-      title: Text(
-        username,
-        style: TextStyle(
-          fontSize: 20,
-          color: textColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      leading: Icon(icon, color: textColor),
+      title: Text(title, style: TextStyle(color: textColor)),
+      trailing: Icon(Icons.chevron_right, color: textColor), // Add right arrow
       onTap: onTap,
     );
   }
 
-  Widget _buildListTile({
+  Widget _buildListTileNoArrow({
     required String title,
     required IconData icon,
     required Color textColor,
