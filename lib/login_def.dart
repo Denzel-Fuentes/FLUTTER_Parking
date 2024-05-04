@@ -5,6 +5,9 @@ import 'package:parking_app/Welcome.dart'; // Importa la pantalla de bienvenida
 import 'package:parking_app/admin/AdminDashboard.dart';
 import 'package:parking_app/animation/FadeAnimation.dart';
 import 'package:parking_app/main_screen.dart';
+import 'package:parking_app/models/User.dart';
+import 'package:parking_app/repositories/user.dart';
+import 'package:parking_app/services/user.dart';
 
 class LoginDef extends StatefulWidget {
   const LoginDef({Key? key}) : super(key: key);
@@ -17,15 +20,17 @@ class _LoginDefState extends State<LoginDef> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
+  UserService service = UserService(repository: UserRepository());
 
   String _email = "";
   String _password = "";
 
-  void _handleLogin() async {
-    print('Email: $_email, Password: $_password');
+  Future<void> _handleLogin() async {
+
+    User user = await service.login(email: _email, password: _password);
 
     // Simulamos una validación de credenciales (deberías implementar una real aquí)
-    if (_email == "admin@example.com" && _password == "admin" && kIsWeb) {
+    if (user.isAdmin! && kIsWeb) {
       // Solo en la web y si las credenciales son de un administrador
       Navigator.pushReplacement(
         context,

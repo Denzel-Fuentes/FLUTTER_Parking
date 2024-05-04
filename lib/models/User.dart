@@ -4,6 +4,7 @@ class User {
   final String? password;
   final String phone;
   final String email;
+  final bool? isAdmin;
 
   User({
     this.id,
@@ -11,6 +12,7 @@ class User {
     this.password,
     required this.phone,
     required this.email,
+    this.isAdmin = false,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class User {
       password: json['password'],
       phone: json['phone'],
       email: json['email'],
+      isAdmin: json['is_admin'],
     );
   }
 
@@ -29,6 +32,7 @@ class User {
       'password': password,
       'phone': phone,
       'email': email,
+      'is_admin': isAdmin ?? false,
     };
   }
 }

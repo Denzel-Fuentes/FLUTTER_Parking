@@ -8,4 +8,9 @@ class UserRepository extends Repository<User> {
             collection: FirebaseFirestore.instance.collection('users'),
             fromJson: (json) => User.fromJson(json),
             toJson: (item) => item.toJson());
+
+  Future<User> getByEmail(String email) async{
+     QuerySnapshot<Map<String,dynamic>> snapshots = await collection.where("email", isEqualTo: email).get();
+     return User.fromJson({"_id":snapshots.docs[0].id,...snapshots.docs[0].data()});
+  }
 }

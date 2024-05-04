@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/Welcome.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:parking_app/models/User.dart';
+import 'package:parking_app/repositories/user.dart';
+import 'package:parking_app/services/user.dart';
 
 class RegistroScreen extends StatefulWidget {
   const RegistroScreen({Key? key}) : super(key: key);
@@ -18,17 +21,23 @@ class _RegistroScreenState extends State<RegistroScreen> {
   String _selectedCountryCode = '+591'; // Código predeterminado
   String _userType = 'Cliente'; // Tipo de usuario seleccionado
   List<String> countryCodes = ['+1', '+44', '+34', '+591']; // Lista de códigos
+  UserService service = UserService(repository: UserRepository());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Crear cuenta"), backgroundColor: Colors.red),
+      appBar: AppBar(
+          title: const Text("Crear cuenta"), backgroundColor: Colors.red),
       body: Container(
         color: Colors.white, // Fondo blanco
         padding: const EdgeInsets.all(20),
         child: Column(
           children: <Widget>[
-            Text("Registro", style: TextStyle(color: Colors.red, fontSize: 40, fontWeight: FontWeight.bold)),
+            const Text("Registro",
+                style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(20),
@@ -47,7 +56,8 @@ class _RegistroScreenState extends State<RegistroScreen> {
                 children: [
                   TextField(
                     controller: emailController,
-                    decoration: inputDecoration('Usuario'),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: inputDecoration('Correo Electronico'),
                   ),
                   TextField(
                     controller: passwordController,
@@ -61,7 +71,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                   Row(
                     children: [
                       Expanded(
-                        flex: 2, // Proporción para el código de país
+                        flex: 8, // Proporción para el código de país
                         child: DropdownButtonFormField<String>(
                           value: _selectedCountryCode,
                           decoration: inputDecoration(''),
@@ -70,7 +80,8 @@ class _RegistroScreenState extends State<RegistroScreen> {
                               _selectedCountryCode = newValue!;
                             });
                           },
-                          items: countryCodes.map<DropdownMenuItem<String>>((String value) {
+                          items: countryCodes
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -78,21 +89,22 @@ class _RegistroScreenState extends State<RegistroScreen> {
                           }).toList(),
                         ),
                       ),
-                      SizedBox(width: 5), // Espacio entre los dos campos
                       Expanded(
                         flex: 20, // Proporción para el número de teléfono
                         child: TextField(
                           controller: phoneController,
+                          keyboardType: TextInputType.phone,
                           decoration: inputDecoration('Número de teléfono'),
                         ),
                       ),
                     ],
                   ),
-                  
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     onPressed: () => registerUser(),
-                    child: Text('Continuar', style: TextStyle(color: Colors.white)),
+                    child: const Text('Continuar',
+                        style: TextStyle(color: Colors.white)),
                   ),
                   const SizedBox(height: 20),
                 ],
@@ -107,11 +119,12 @@ class _RegistroScreenState extends State<RegistroScreen> {
   InputDecoration inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.grey),
-      enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey), // Ajustando al color de los textos
+      labelStyle: const TextStyle(color: Colors.grey),
+      enabledBorder: const UnderlineInputBorder(
+        borderSide:
+            BorderSide(color: Colors.grey), // Ajustando al color de los textos
       ),
-      focusedBorder: UnderlineInputBorder(
+      focusedBorder: const UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.grey),
       ),
       fillColor: Colors.white,
@@ -121,7 +134,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
 
   Widget buildRadioOption(String title) {
     return RadioListTile<String>(
-      title: Text(title, style: TextStyle(color: Colors.black)),
+      title: Text(title, style: const TextStyle(color: Colors.black)),
       value: title,
       groupValue: _userType,
       onChanged: (value) {
@@ -133,13 +146,23 @@ class _RegistroScreenState extends State<RegistroScreen> {
     );
   }
 
-  void registerUser() {
-  print('Usuario registrado con: ${emailController.text}');
-  print('Tipo de usuario: $_userType');
-  Fluttertoast.showToast(msg: 'Registro exitoso');
-  
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => Welcome()),
-  );
-}}
+  Future<void> registerUser() async {
+    print('Usuario registrado con: ${emailController.text}');
+    print('Tipo de usuario: $_userType');
+
+    User user = User(
+        fullName: fullNameController.text,
+        phone: phoneController.text,
+        email: emailController.text,
+        password: passwordController.text,
+    );
+
+    await service.register(user);
+
+    Fluttertoast.showToast(msg: 'Registro exitoso');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Welcome()),
+    );
+  }
+}
