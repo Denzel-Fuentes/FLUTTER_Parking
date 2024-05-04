@@ -9,8 +9,15 @@ class UserRepository extends Repository<User> {
             fromJson: (json) => User.fromJson(json),
             toJson: (item) => item.toJson());
 
-  Future<User> getByEmail(String email) async{
-     QuerySnapshot<Map<String,dynamic>> snapshots = await collection.where("email", isEqualTo: email).get();
-     return User.fromJson({"_id":snapshots.docs[0].id,...snapshots.docs[0].data()});
+  // @override
+  // Future<void> create(User item) async {
+  //   await collection.doc(item.id).set(item.toJson());
+  // }
+
+  Future<User> getByEmail(String email) async {
+    QuerySnapshot<Map<String, dynamic>> snapshots =
+        await collection.where("email", isEqualTo: email).get();
+    return User.fromJson(
+        {"_id": snapshots.docs[0].id, ...snapshots.docs[0].data()});
   }
 }

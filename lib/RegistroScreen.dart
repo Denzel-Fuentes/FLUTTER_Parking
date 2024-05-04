@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/Welcome.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:parking_app/main_screen.dart';
 import 'package:parking_app/models/User.dart';
 import 'package:parking_app/repositories/user.dart';
 import 'package:parking_app/services/user.dart';
@@ -147,22 +148,23 @@ class _RegistroScreenState extends State<RegistroScreen> {
   }
 
   Future<void> registerUser() async {
-    print('Usuario registrado con: ${emailController.text}');
-    print('Tipo de usuario: $_userType');
-
     User user = User(
-        fullName: fullNameController.text,
-        phone: phoneController.text,
-        email: emailController.text,
-        password: passwordController.text,
+      fullName: fullNameController.text,
+      phone: phoneController.text,
+      email: emailController.text,
+      password: passwordController.text,
     );
-
-    await service.register(user);
-
-    Fluttertoast.showToast(msg: 'Registro exitoso');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => Welcome()),
-    );
+    try {
+      await service.register(user);
+      Fluttertoast.showToast(msg: 'Registro exitoso');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    } catch (e) {
+      dynamic error = e;
+      Fluttertoast.showToast(
+          msg: error.message ?? 'Error al realizar el registro');
+    }
   }
 }
