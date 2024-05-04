@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/OffersPropose.dart';
 import 'package:parking_app/Profile_screen.dart';
-import 'package:parking_app/offer_screen.dart';
+import 'package:parking_app/map_screen.dart';
 
 void main() async {
 
@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    OfferScreen(),
+    MapScreen(),
     OffersProposeTAB(),
     ProfileScreen()
   ];
