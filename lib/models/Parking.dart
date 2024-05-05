@@ -6,12 +6,14 @@ class Parking {
   final String userId;
   final String name;
   final Location location;
+  final List<String> additionalSigns;
 
   Parking({
     this.id,
     required this.userId,
     required this.name,
     required this.location,
+    required this.additionalSigns
   });
 
   factory Parking.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Parking {
       userId: json['user'],
       name: json['name'],
       location: Location.fromJson(json['location']),
+      additionalSigns: List<String>.from(json["additional_signs"])
     );
   }
 
@@ -28,6 +31,7 @@ class Parking {
       'user': userId,
       'name': name,
       'location': location.toJson(),
+      'additional_signs': additionalSigns
     };
   }
 }

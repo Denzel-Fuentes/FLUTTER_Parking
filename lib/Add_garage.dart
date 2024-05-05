@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:parking_app/Add_offer.dart';
+import 'package:parking_app/models/Location.dart';
+import 'package:parking_app/models/Parking.dart';
+import 'package:parking_app/repositories/parking.dart';
+import 'package:parking_app/services/repository.dart';
 
 const String MAPBOX_ACCESS_TOKEN =
     'pk.eyJ1IjoicGl0bWFjIiwiYSI6ImNsY3BpeWxuczJhOTEzbnBlaW5vcnNwNzMifQ.ncTzM4bW-jpq-hUFutnR1g';
@@ -29,6 +34,7 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
   List<String> _offers = [];
   LatLng? _selectedLocation;
   final MapController _mapController = MapController();
+  List<String> additionalSigns = [];
 
   @override
   void initState() {
@@ -65,31 +71,7 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final _offerController = TextEditingController();
-        return AlertDialog(
-          title: Text('Añadir Oferta'),
-          content: TextField(
-            controller: _offerController,
-            decoration: InputDecoration(hintText: 'Ingrese la oferta'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _offers.add(_offerController.text);
-                });
-                Navigator.of(context).pop();
-              },
-              child: Text('Añadir'),
-            ),
-          ],
-        );
+        return AddOfferScreen();
       },
     );
   }
@@ -125,7 +107,8 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                TextFormField(
+                additionalSignsInput(),
+/*                 TextFormField(
                   controller: _directionsController,
                   decoration:
                       InputDecoration(labelText: 'Indicaciones para llegar'),
@@ -137,8 +120,8 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
                     }
                     return null;
                   },
-                ),
-                SizedBox(height: 16.0),
+                ), */
+
                 Text('Ofertas',
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
@@ -241,7 +224,7 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         minimumSize: Size(double.infinity, 50)),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         String name = _nameController.text;
                         String directions = _directionsController.text;
@@ -252,6 +235,19 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
                         print('Indicaciones: $directions');
                         print('Ofertas: $offers');
                         print('Ubicación: $location');
+
+                        await ParkingRepository().create(Parking(
+                            userId: "GMCDGg7vMlEDpFeKgvQY",
+                            name: name,
+                            additionalSigns: <String>[
+                              "Cerca de un arbol",
+                              "porton de madera",
+                              "casa de 2 pisos"
+                            ],
+                            location: Location(coordinates: <double>[
+                              location.latitude,
+                              location.longitude
+                            ])));
                       }
                     },
                     child: Text('Terminar'),
@@ -263,5 +259,80 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
         ),
       ),
     );
+  }
+
+Widget additionalSignsInput() {
+  return Column(
+    children: [
+      Center(
+        child:       ElevatedButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              String newDirection = '';
+              return AlertDialog(
+                title: Text('Nueva Indicación'),
+                content: TextField(
+                  onChanged: (value) {
+                    newDirection = value;
+                  },
+                  decoration: InputDecoration(labelText: 'Indicaciones'),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (newDirection.isNotEmpty) {
+                        addDirection(newDirection);
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Agregar'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: Text('Agregar Indicación'),
+      ),
+      ),
+
+      SizedBox(height: 16.0),
+      Column(
+          children: additionalSigns.map((sign) {
+            int index = additionalSigns.indexOf(sign);
+            return ListTile(
+              title: Text(sign),
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  removeDirection(index);
+                },
+              ),
+            );
+          }).toList(),
+        ),
+      
+    ],
+  );
+}
+
+  void addDirection(String direction) {
+    setState(() {
+      additionalSigns.add(direction);
+    });
+  }
+
+  void removeDirection(int index) {
+    setState(() {
+      additionalSigns.removeAt(index);
+    });
   }
 }

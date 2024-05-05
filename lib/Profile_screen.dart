@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/AddVehicle.dart';
 import 'package:parking_app/list_garages.dart';
 import 'package:parking_app/list_offers.dart';
 
@@ -52,7 +53,10 @@ class ProfileScreen extends StatelessWidget {
                   title: 'Registrar vehículo',
                   icon: Icons.directions_car,
                   textColor: textColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddVehicle()));
+                  },
                 ),
                 Divider(color: lightGray),
                 _buildListTile(
