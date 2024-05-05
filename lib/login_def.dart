@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:parking_app/RegistroScreen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:parking_app/Welcome.dart'; // Importa la pantalla de bienvenida
 import 'package:parking_app/admin/AdminDashboard.dart';
 import 'package:parking_app/animation/FadeAnimation.dart';
+import 'package:parking_app/context/user.dart';
 import 'package:parking_app/main_screen.dart';
 import 'package:parking_app/models/User.dart';
 import 'package:parking_app/repositories/user.dart';
@@ -24,24 +26,31 @@ class _LoginDefState extends State<LoginDef> {
 
   String _email = "";
   String _password = "";
+  
+    @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleLogin();
+    });
+  }
+
 
   Future<void> _handleLogin() async {
-
-    User user = await service.login(email: _email, password: _password);
-
-    // Simulamos una validación de credenciales (deberías implementar una real aquí)
-    if (user.isAdmin! && kIsWeb) {
-      // Solo en la web y si las credenciales son de un administrador
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const AdminDashboard()),
-      );
-    } else {
-      // Redirección para usuarios móviles o credenciales incorrectas
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
+    try {
+      await service.login(email: _email, password: _password);
+      if (UserManager.getCurrentUser!.isAdmin! && kIsWeb) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const AdminDashboard()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
+      }
+    } catch (e) {
+      dynamic error = e;
+      Fluttertoast.showToast(
+          msg: error.message ?? "Error al realizar el login",
+          timeInSecForIosWeb: 3);
     }
   }
 

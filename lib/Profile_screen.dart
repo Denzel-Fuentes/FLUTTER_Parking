@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/AddVehicle.dart';
+import 'package:parking_app/context/user.dart';
 import 'package:parking_app/list_garages.dart';
 import 'package:parking_app/list_offers.dart';
+import 'package:parking_app/login_def.dart';
+import 'package:parking_app/services/user.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -35,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 8), // Space between the icon and the text
                 Text(
-                  'Nombre del Usuario',
+                  UserManager.getCurrentUser!.fullName,
                   style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
@@ -105,7 +108,13 @@ class ProfileScreen extends StatelessWidget {
                   title: 'Cerrar sesión',
                   icon: Icons.exit_to_app,
                   textColor: Colors.red,
-                  onTap: () {},
+                  onTap: () async {
+                    await UserService.logout();
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginDef()));
+                  },
                 ),
               ],
             ),
