@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:parking_app/Welcome.dart'; // Asegúrate de importar el archivo de la pantalla de bienvenida
+import 'package:parking_app/context/user.dart'; // Asegúrate de que el manejo del usuario está correctamente implementado
+import 'package:parking_app/models/Vehicle.dart';
+import 'package:parking_app/repositories/vehicle.dart';
 
 class AddVehicle extends StatelessWidget {
   final TextEditingController marcaController = TextEditingController();
@@ -13,70 +15,57 @@ class AddVehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vehículos'),
+        title: Text('Añadir Vehículo'),
       ),
       body: Container(
         padding: EdgeInsets.all(20),
-        color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Añadir vehículo',
-              style: TextStyle(fontSize: 20),
+            TextField(
+              controller: marcaController,
+              decoration: InputDecoration(labelText: 'Marca'),
             ),
-            SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: marcaController,
-                    decoration: InputDecoration(labelText: 'Marca'),
-                  ),
-                  TextField(
-                    controller: modeloController,
-                    decoration: InputDecoration(labelText: 'Modelo'),
-                  ),
-                  TextField(
-                    controller: placaController,
-                    decoration: InputDecoration(labelText: 'Placa'),
-                  ),
-                  TextField(
-                    controller: alturaController,
-                    decoration: InputDecoration(labelText: 'Altura'),
-                  ),
-                  TextField(
-                    controller: anchoController,
-                    decoration: InputDecoration(labelText: 'Ancho'),
-                  ),
-                  TextField(
-                    controller: largoController,
-                    decoration: InputDecoration(labelText: 'Largo'),
-                  ),
-                ],
-              ),
+            TextField(
+              controller: modeloController,
+              decoration: InputDecoration(labelText: 'Modelo'),
             ),
-            SizedBox(height: 20),
+            TextField(
+              controller: placaController,
+              decoration: InputDecoration(labelText: 'Placa'),
+            ),
+            TextField(
+              controller: alturaController,
+              decoration: InputDecoration(labelText: 'Altura'),
+            ),
+            TextField(
+              controller: anchoController,
+              decoration: InputDecoration(labelText: 'Ancho'),
+            ),
+            TextField(
+              controller: largoController,
+              decoration: InputDecoration(labelText: 'Largo'),
+            ),
             ElevatedButton(
-              onPressed: () {
-                // Lógica para añadir vehículo
-                // Aquí puedes agregar la lógica para almacenar el vehículo
-
-                // Una vez que se haya añadido el vehículo, regresa a la pantalla de bienvenida
-                Navigator.pop(context);
+              onPressed: () async {
+                Vehicle newVehicle = Vehicle(
+                  brand: marcaController.text,
+                  model: modeloController.text,
+                  registrationPlate: placaController.text,
+                  high: double.parse(alturaController.text),
+                  wide: double.parse(anchoController.text),
+                  long: double.parse(largoController.text),
+                  userId: UserManager.getCurrentUser?.id ?? "defaultUserId",
+                );
+                try {
+                  var vehicleRepo = VehicleRepository();
+                  String vehicleId = await vehicleRepo.create(newVehicle);
+                  newVehicle.id = vehicleId;
+                  Navigator.pop(context, newVehicle);
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Error al guardar el vehículo: $e')));
+                }
               },
               child: Text('Añadir vehículo'),
             ),

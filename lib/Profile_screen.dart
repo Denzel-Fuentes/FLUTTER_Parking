@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:parking_app/AddVehicle.dart';
+import 'package:parking_app/Details_profile.dart';
+import 'package:parking_app/ListVehicle.dart';
 import 'package:parking_app/context/user.dart';
 import 'package:parking_app/list_garages.dart';
 import 'package:parking_app/list_offers.dart';
 import 'package:parking_app/login_def.dart';
+import 'package:parking_app/select_parking.dart';
 import 'package:parking_app/services/user.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -44,6 +46,25 @@ class ProfileScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: textColor),
                 ),
+                SizedBox(
+                    height: 8), // Space before the "View Profile Details" text
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DetailPerfil()),
+                    );
+                  },
+                  child: Text(
+                    'Ver Detalles del Perfil',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
                 SizedBox(height: 16), // Space before the subtitle
               ],
             ),
@@ -57,8 +78,10 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.directions_car,
                   textColor: textColor,
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddVehicle()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ListVehicleScreen()));
                   },
                 ),
                 Divider(color: lightGray),
@@ -80,7 +103,14 @@ class ProfileScreen extends StatelessWidget {
                   title: 'Publicar oferta',
                   icon: Icons.public,
                   textColor: textColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SelectParkingScreen()), // Asegúrate de que AddOfferScreen esté definido y disponible
+                    );
+                  },
                 ),
                 Divider(color: lightGray),
                 _buildListTile(

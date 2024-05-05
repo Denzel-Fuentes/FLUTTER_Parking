@@ -1,19 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:parking_app/Cards/VehicleCard.dart';
 import 'package:parking_app/models/Vehicle.dart';
+import 'package:parking_app/repositories/vehicle.dart';
+import 'package:parking_app/AddVehicle.dart';
+import 'package:parking_app/Cards/VehicleCard.dart';
 
 class ListVehicleScreen extends StatefulWidget {
-  const ListVehicleScreen({super.key});
-
   @override
-  State<ListVehicleScreen> createState() => _ListVehicleScreenState();
+  _ListVehicleScreenState createState() => _ListVehicleScreenState();
 }
 
 class _ListVehicleScreenState extends State<ListVehicleScreen> {
- final _formKey = GlobalKey<FormState>();
-  String _nombre = '';
-  String _marca = '';
+  List<Vehicle> vehicles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadVehicles();
+  }
+
+  void loadVehicles() async {
+    var vehicleRepo = VehicleRepository();
+    try {
+      vehicles = await vehicleRepo.getAll();
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al cargar vehículos: $e')));
+    }
+  }
+
+  void _navigateAndAddVehicle(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddVehicle()),
+    );
+
+    if (result is Vehicle) {
+      setState(() {
+        vehicles.add(result);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,20 +49,24 @@ class _ListVehicleScreenState extends State<ListVehicleScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child:  Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                  },
-                  child: Text('Añadir'),
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () => _navigateAndAddVehicle(context),
+              child: Text('Añadir Vehículo'),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: vehicles.length,
+                itemBuilder: (context, index) {
+                  return VehicleCard(vehicle: vehicles[index]);
+                },
               ),
-              VehicleCard(vehicle: Vehicle(brand: "Susuki", model: "Samurai", registrationPlate: "PdDS001", high: 22.5, wide: 2.4, long: 50.3, userId: "1"))
-            ],
-          ),
+            ),
+          ],
         ),
-      ); 
+      ),
+    );
   }
-}  
+}
