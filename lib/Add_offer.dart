@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/models/Offer.dart';
+import 'package:parking_app/repositories/offer.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: AddOfferScreen(),
-  ));
-}
 
 class AddOfferScreen extends StatefulWidget {
+  final bool isPreviewMode;
+
+  const AddOfferScreen({super.key,this.isPreviewMode = false});
   @override
   _AddOfferScreenState createState() => _AddOfferScreenState();
 }
@@ -19,14 +19,18 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
   TextEditingController widthController = TextEditingController();
   TextEditingController lengthController = TextEditingController();
 
-  void saveOffer() {
+  void saveOffer() async{
     print('Precio: $price bs');
     print('Descripción: ${descriptionController.text}');
     print('Alto: ${heightController.text} cm');
     print('Ancho: ${widthController.text} cm');
     print('Largo: ${lengthController.text} cm');
     print('Precio es por: ${pricingType == "daily" ? "día" : "hora"}');
-    // Aquí podrías agregar el código para guardar los datos en una base de datos o realizar otra acción.
+
+    if (widget.isPreviewMode){
+      Offer newOffer = Offer(parkingId: "0", price: price, description: descriptionController.text, title: "", high: double.parse(heightController.text), wide: double.parse(widthController.text), long: double.parse(lengthController.text), state: "LIBRE", type: pricingType!);
+      Navigator.pop(context,newOffer);
+    }
   }
 
   @override

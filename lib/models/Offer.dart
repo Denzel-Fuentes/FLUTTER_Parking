@@ -1,7 +1,7 @@
 class Offer {
   final String? id;
   final String parkingId;
-  final double price;
+  final int price;
   final String description;
   final String title;
   final double high;
@@ -27,7 +27,7 @@ class Offer {
     return Offer(
       id: json['_id'],
       parkingId: json['parking'],
-      price: json['price'].toDouble(),
+      price: json['price'].toInt(),
       description: json['description'],
       title: json['tittle'],
       high: json['high'].toDouble(),
@@ -40,7 +40,6 @@ class Offer {
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,
       'parking': parkingId,
       'price': price,
       'description': description,

@@ -3,8 +3,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:parking_app/Add_offer.dart';
+import 'package:parking_app/Cards/OfferCard.dart';
+import 'package:parking_app/context/user.dart';
 import 'package:parking_app/models/Location.dart';
+import 'package:parking_app/models/Offer.dart';
 import 'package:parking_app/models/Parking.dart';
+import 'package:parking_app/repositories/offer.dart';
 import 'package:parking_app/repositories/parking.dart';
 import 'package:parking_app/services/repository.dart';
 
@@ -31,7 +35,7 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _directionsController = TextEditingController();
-  List<String> _offers = [];
+  List<Offer> _offers = [];
   LatLng? _selectedLocation;
   final MapController _mapController = MapController();
   List<String> additionalSigns = [];
@@ -67,13 +71,20 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
     return Geolocator.getCurrentPosition();
   }
 
-  void _addOffer() {
-    showDialog(
+  void _addOffer() async {
+    final Offer? newOffer = await showDialog<Offer>(
       context: context,
       builder: (BuildContext context) {
-        return AddOfferScreen();
+        return AddOfferScreen(
+          isPreviewMode: true,
+        );
       },
     );
+
+    if (newOffer != null)
+      setState(() {
+        _offers.add(newOffer);
+      });
   }
 
   @override
@@ -126,7 +137,7 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                 SizedBox(height: 8.0),
-                ..._offers.map((offer) => Text('- $offer')).toList(),
+                showOffers(),
                 SizedBox(height: 8.0),
                 Center(
                   child: ElevatedButton(
@@ -228,26 +239,34 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
                       if (_formKey.currentState!.validate()) {
                         String name = _nameController.text;
                         String directions = _directionsController.text;
-                        List<String> offers = _offers;
                         LatLng location = _selectedLocation!;
 
                         print('Nombre: $name');
                         print('Indicaciones: $directions');
-                        print('Ofertas: $offers');
                         print('Ubicación: $location');
 
-                        await ParkingRepository().create(Parking(
-                            userId: "GMCDGg7vMlEDpFeKgvQY",
-                            name: name,
-                            additionalSigns: <String>[
-                              "Cerca de un arbol",
-                              "porton de madera",
-                              "casa de 2 pisos"
-                            ],
-                            location: Location(coordinates: <double>[
-                              location.latitude,
-                              location.longitude
-                            ])));
+                        String parkingID = await ParkingRepository().create(
+                            Parking(
+                                userId: UserManager.getCurrentUser!.id!,
+                                name: name,
+                                additionalSigns: additionalSigns,
+                                location: Location(coordinates: <double>[
+                                  location.latitude,
+                                  location.longitude
+                                ])));
+
+                        for (Offer offer in _offers) {
+                          OfferRepository().create(Offer(
+                              parkingId: parkingID,
+                              price: offer.price,
+                              description: offer.description,
+                              title: "",
+                              high: offer.high,
+                              wide: offer.wide,
+                              long: offer.long,
+                              state: offer.state,
+                              type: offer.type));
+                        }
                       }
                     },
                     child: Text('Terminar'),
@@ -261,55 +280,54 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
     );
   }
 
-Widget additionalSignsInput() {
-  return Column(
-    children: [
-      Center(
-        child:       ElevatedButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              String newDirection = '';
-              return AlertDialog(
-                title: Text('Nueva Indicación'),
-                content: TextField(
-                  onChanged: (value) {
-                    newDirection = value;
-                  },
-                  decoration: InputDecoration(labelText: 'Indicaciones'),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Cancelar'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      if (newDirection.isNotEmpty) {
-                        addDirection(newDirection);
-                      }
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Agregar'),
-                  ),
-                ],
+  Widget additionalSignsInput() {
+    return Column(
+      children: [
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  String newDirection = '';
+                  return AlertDialog(
+                    title: Text('Nueva Indicación'),
+                    content: TextField(
+                      onChanged: (value) {
+                        newDirection = value;
+                      },
+                      decoration: InputDecoration(labelText: 'Indicaciones'),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (newDirection.isNotEmpty) {
+                            addDirection(newDirection);
+                          }
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Agregar'),
+                      ),
+                    ],
+                  );
+                },
               );
             },
-          );
-        },
-        child: Text('Agregar Indicación'),
-      ),
-      ),
-
-      SizedBox(height: 16.0),
-      Column(
+            child: Text('Agregar Indicación'),
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Column(
           children: additionalSigns.map((sign) {
             int index = additionalSigns.indexOf(sign);
             return ListTile(
-              title: Text(sign),
+              title: Text('- $sign'),
               trailing: IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
@@ -319,10 +337,25 @@ Widget additionalSignsInput() {
             );
           }).toList(),
         ),
-      
-    ],
-  );
-}
+      ],
+    );
+  }
+
+  Widget showOffers() {
+    return Column(
+      children: _offers.map((offer) {
+        int index = _offers.indexOf(offer);
+        return OfferCard(
+            offer: offer,
+            showDeleteIcon: true,
+            onDelete: () {
+              setState(() {
+                _offers.removeAt(index);
+              });
+            });
+      }).toList(),
+    );
+  }
 
   void addDirection(String direction) {
     setState(() {

@@ -21,9 +21,10 @@ abstract class Repository<T> {
     }
   }
 
-  Future<void> create(T item) async {
+  Future<String> create(T item) async {
     try {
-      await collection.add(toJson(item));
+      DocumentReference<Map<String, dynamic>> response = await collection.add(toJson(item));
+      return response.id;
     } catch (e) {
       throw Exception('Failed to add data to Firestore: $e');
     }
@@ -44,4 +45,18 @@ abstract class Repository<T> {
       throw Exception('Failed to delete data from Firestore: $e');
     }
   }
+
+  Future<List<T>> getAllByField(String field,var param) async {
+   try {
+      final querySnapshot = await collection.where(field,isEqualTo: param).get();
+      final List<T> items = [];
+      querySnapshot.docs.forEach((element) {
+        items.add(fromJson({"_id": element.id, ...element.data()}));
+      });
+      return items;
+    } catch (e) {
+      throw Exception('Failed to load data from Firestore: $e');
+    } 
+  }
 }
+
