@@ -7,7 +7,7 @@ class Offer {
   final double high;
   final double wide;
   final double long;
-  final String state;
+  String? state;
   final String type;
 
   Offer({
@@ -19,7 +19,7 @@ class Offer {
     required this.high,
     required this.wide,
     required this.long,
-    required this.state,
+    this.state = "DESOCUPADO",
     required this.type,
   });
 

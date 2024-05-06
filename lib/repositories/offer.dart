@@ -8,4 +8,9 @@ class OfferRepository extends Repository<Offer> {
             collection: FirebaseFirestore.instance.collection('offers'),
             fromJson: (json) => Offer.fromJson(json),
             toJson: (item) => item.toJson());
+
+  Future<List<Offer>> getAllByFieldAndState(String field, String param, {String state = "LIBRE"}) async {
+    List<Offer> offers = await super.getAllByField(field, param);
+    return offers.where((offer) => offer.state == state).toList();
+  }
 }

@@ -7,7 +7,6 @@ import 'package:parking_app/admin/AdminDashboard.dart';
 import 'package:parking_app/animation/FadeAnimation.dart';
 import 'package:parking_app/context/user.dart';
 import 'package:parking_app/main_screen.dart';
-import 'package:parking_app/models/User.dart';
 import 'package:parking_app/repositories/user.dart';
 import 'package:parking_app/services/user.dart';
 

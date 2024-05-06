@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/Add_garage.dart'; // Asegúrate de que esta importación es correcta para tu RegisterGarageScreen
 import 'package:parking_app/Cards/ParkingCard.dart';
+import 'package:parking_app/context/Garage.dart';
 import 'package:parking_app/context/user.dart';
 import 'package:parking_app/models/Parking.dart';
 import 'package:parking_app/repositories/parking.dart';
@@ -33,9 +34,9 @@ class _SelectParkingScreenState extends State<SelectParkingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Parking'),
+        title: const Text('Select Parking'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -47,7 +48,7 @@ class _SelectParkingScreenState extends State<SelectParkingScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (parkings.isEmpty)
-              Column(
+              const Column(
                 children: [
                   Text(
                     'No registered garages available',
@@ -65,34 +66,39 @@ class _SelectParkingScreenState extends State<SelectParkingScreen> {
                   ),
                 );
               },
-              child: Text('Add Garage'),
+              child: const Text('Add Garage'),
             ),
             if (parkings.isNotEmpty)
               Expanded(
                 child: ListView(
-                  children: parkings.map((parking) => RadioListTile<Parking>(
-                    title: ParkingCard(parking: parking),
-                    value: parking,
-                    groupValue: selectedParking,
-                    onChanged: (Parking? value) {
-                      setState(() {
-                        selectedParking = value;
-                      });
-                    },
-                  )).toList(),
+                  children: parkings
+                      .map((parking) => RadioListTile<Parking>(
+                            title: ParkingCard(parking: parking),
+                            value: parking,
+                            groupValue: selectedParking,
+                            onChanged: (Parking? value) {
+                              setState(() {
+                                selectedParking = value;
+                              });
+                            },
+                          ))
+                      .toList(),
                 ),
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: selectedParking != null ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ParkingRentalScreen(),
-                  ),
-                );
-              } : null,
-              child: Text('Continue'),
+              onPressed: selectedParking != null
+                  ? () {
+                      ParkingManager.setCurrentParking(selectedParking!);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ParkingRentalScreen(),
+                        ),
+                      );
+                    }
+                  : null,
+              child: const Text('Continue'),
             ),
           ],
         ),

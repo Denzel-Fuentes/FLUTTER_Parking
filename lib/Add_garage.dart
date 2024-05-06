@@ -10,7 +10,6 @@ import 'package:parking_app/models/Offer.dart';
 import 'package:parking_app/models/Parking.dart';
 import 'package:parking_app/repositories/offer.dart';
 import 'package:parking_app/repositories/parking.dart';
-import 'package:parking_app/services/repository.dart';
 
 const String MAPBOX_ACCESS_TOKEN =
     'pk.eyJ1IjoicGl0bWFjIiwiYSI6ImNsY3BpeWxuczJhOTEzbnBlaW5vcnNwNzMifQ.ncTzM4bW-jpq-hUFutnR1g';

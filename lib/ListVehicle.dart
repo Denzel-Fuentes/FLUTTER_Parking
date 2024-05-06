@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/context/user.dart';
 import 'package:parking_app/models/Vehicle.dart';
 import 'package:parking_app/repositories/vehicle.dart';
 import 'package:parking_app/AddVehicle.dart';
@@ -21,7 +22,7 @@ class _ListVehicleScreenState extends State<ListVehicleScreen> {
   void loadVehicles() async {
     var vehicleRepo = VehicleRepository();
     try {
-      vehicles = await vehicleRepo.getAll();
+      vehicles = await vehicleRepo.getAllByField("user",UserManager.getCurrentUser!.id);
       setState(() {});
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al cargar vehículos: $e')));

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:parking_app/context/Garage.dart';
 import 'package:parking_app/models/Offer.dart';
 import 'package:parking_app/repositories/offer.dart';
-import 'package:parking_app/services/repository.dart';
 
 class AddOfferScreen extends StatefulWidget {
   final bool isPreviewMode;
   final Offer? offer;
-  const AddOfferScreen({super.key, this.isPreviewMode = false, this.offer});
+  final Function()? onSuccess;
+
+  const AddOfferScreen(
+      {super.key, this.isPreviewMode = false, this.offer, this.onSuccess});
   @override
   _AddOfferScreenState createState() => _AddOfferScreenState();
 }
@@ -43,13 +46,15 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
         high: double.parse(heightController.text),
         wide: double.parse(widthController.text),
         long: double.parse(lengthController.text),
-        state: "LIBRE",
         type: pricingType!);
 
     if (widget.isPreviewMode) {
       Navigator.pop(context, newOffer);
     } else {
       await OfferRepository().create(newOffer);
+      widget.onSuccess!();
+      Fluttertoast.showToast(
+          msg: "Oferta agregada de manera exitosa", timeInSecForIosWeb: 3);
     }
   }
 
@@ -67,7 +72,7 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
             high: double.parse(heightController.text),
             wide: double.parse(widthController.text),
             long: double.parse(lengthController.text),
-            state: "LIBRE",
+            state: widget.offer!.state,
             type: pricingType!));
   }
 
@@ -195,16 +200,17 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
               SizedBox(
                 height: 12,
               ),
-              ElevatedButton(
-                onPressed: updateOffer,
-                child: Text('Actualizar',
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
-                // Set the width of the button
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  minimumSize: Size(double.infinity, 50),
+              if (widget.offer != null)
+                ElevatedButton(
+                  onPressed: updateOffer,
+                  child: Text('Actualizar',
+                      style: TextStyle(fontSize: 16, color: Colors.white)),
+                  // Set the width of the button
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    minimumSize: Size(double.infinity, 50),
+                  ),
                 ),
-              ),
               if (widget.offer == null)
                 Center(
                   child: ElevatedButton(
