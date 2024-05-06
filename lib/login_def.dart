@@ -193,7 +193,8 @@ class _LoginDefState extends State<LoginDef> {
                             margin: const EdgeInsets.symmetric(horizontal: 50),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
-                                color: Colors.red),
+                                color:
+                                    kIsWeb ? Colors.blue.shade300 : Colors.red),
                             child: ElevatedButton(
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -214,7 +215,7 @@ class _LoginDefState extends State<LoginDef> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                         FadeAnimation(
                           1.5,
                           Container(
@@ -223,7 +224,8 @@ class _LoginDefState extends State<LoginDef> {
                             margin: const EdgeInsets.symmetric(horizontal: 50),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
-                                color: Colors.red),
+                                color:
+                                    kIsWeb ? Colors.blue.shade300 : Colors.red),
                             child: ElevatedButton(
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
