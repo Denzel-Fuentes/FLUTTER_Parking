@@ -1,6 +1,6 @@
 class Offer {
   final String? id;
-  final String parkingId;
+  final String? parkingId;
   final int price;
   final String description;
   final String title;
@@ -12,7 +12,7 @@ class Offer {
 
   Offer({
     this.id,
-    required this.parkingId,
+    this.parkingId,
     required this.price,
     required this.description,
     required this.title,
@@ -40,7 +40,7 @@ class Offer {
 
   Map<String, dynamic> toJson() {
     return {
-      'parking': parkingId,
+      if (parkingId != null) 'parking': parkingId,
       'price': price,
       'description': description,
       'tittle': title,

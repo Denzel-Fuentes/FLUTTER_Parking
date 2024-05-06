@@ -32,7 +32,7 @@ abstract class Repository<T> {
 
   Future<void> update(String id, T item) async {
     try {
-      await collection.doc(id).set(toJson(item));
+      await collection.doc(id).update(toJson(item));
     } catch (e) {
       throw Exception('Failed to update data in Firestore: $e');
     }

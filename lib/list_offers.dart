@@ -17,13 +17,13 @@ class _ListOffersScreenState extends State<ListOffersScreen> {
 
   @override
   void initState() {
-    
     super.initState();
     loadOffersByParking();
   }
 
-  void loadOffersByParking()async {
-    List<Offer> loadedOffers=  await OfferRepository().getAllByField("parking", ParkingManager.getCurrentParking!.id!);
+  void loadOffersByParking() async {
+    List<Offer> loadedOffers = await OfferRepository()
+        .getAllByField("parking", ParkingManager.getCurrentParking!.id!);
     setState(() {
       offers = loadedOffers;
     });
@@ -40,32 +40,30 @@ class _ListOffersScreenState extends State<ListOffersScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if(offers.isEmpty)
-            Text(
-              'Aún no tienes ofertas registradas',
-              style: TextStyle(fontSize: 16),
-            ),
-            
-
+            if (offers.isEmpty)
+              Text(
+                'Aún no tienes ofertas registradas',
+                style: TextStyle(fontSize: 16),
+              ),
             SizedBox(
               height: 16,
-            ), 
+            ),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddOfferScreen()), 
+                  MaterialPageRoute(builder: (context) => AddOfferScreen()),
                 );
               },
               child: Text('Añadir Oferta'),
             ),
-            if(offers.isNotEmpty)
-            Expanded(
+            if (offers.isNotEmpty)
+              Expanded(
                 child: ListView(
                   children: offers
-                      .map((parking) => OfferCard(
-                            offer: parking,
-                            onDelete: (){},
+                      .map((offer) => OfferCard(
+                            offer: offer,
+                            onDelete: () {},
                           ))
                       .toList(),
                 ),
@@ -74,7 +72,5 @@ class _ListOffersScreenState extends State<ListOffersScreen> {
         ),
       ),
     );
-  
   }
 }
-
