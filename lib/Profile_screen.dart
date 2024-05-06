@@ -84,20 +84,7 @@ class ProfileScreen extends StatelessWidget {
                             builder: (context) => ListVehicleScreen()));
                   },
                 ),
-                Divider(color: lightGray),
-                _buildListTile(
-                  title: 'Añadir oferta',
-                  icon: Icons.add_circle_outline,
-                  textColor: textColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ListOffersScreen()), // Asegúrate de que AddOfferScreen esté definido y disponible
-                    );
-                  },
-                ),
+                
                 Divider(color: lightGray),
                 _buildListTile(
                   title: 'Publicar oferta',

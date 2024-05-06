@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/Add_garage.dart'; // Ensure this is the correct import for your RegisterGarageScreen
 import 'package:parking_app/Cards/ParkingCard.dart';
+import 'package:parking_app/ParkingDetails.dart';
+import 'package:parking_app/context/Garage.dart';
 import 'package:parking_app/context/user.dart';
 import 'package:parking_app/models/Parking.dart';
 import 'package:parking_app/repositories/parking.dart';
@@ -11,7 +13,7 @@ class ListGaragesScreen extends StatefulWidget {
 }
 
 class _ListGaragesScreenState extends State<ListGaragesScreen> {
-  List<Parking> parkings = []; // Initial empty list
+  List<Parking> parkings = []; 
 
   @override
   void initState() {
@@ -44,7 +46,7 @@ class _ListGaragesScreenState extends State<ListGaragesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (parkings.isEmpty) // Display message only if no parkings
+            if (parkings.isEmpty) 
               Column(
                 children: [
                   Text(
@@ -55,7 +57,6 @@ class _ListGaragesScreenState extends State<ListGaragesScreen> {
                 ],
               ),
             ElevatedButton(
-              // Button is always available
               onPressed: () {
                 Navigator.push(
                   context,
@@ -67,11 +68,22 @@ class _ListGaragesScreenState extends State<ListGaragesScreen> {
               child: Text('Añadir Garage'),
             ),
             if (parkings
-                .isNotEmpty) // Display list of parkings only if there are parkings
+                .isNotEmpty)
               Expanded(
                 child: ListView(
-                  children:
-                      parkings.map((e) => ParkingCard(parking: e)).toList(),
+                  children: parkings
+                      .map((parking) => ParkingCard(
+                            parking: parking,
+                            onTap: () {
+                              ParkingManager.setCurrentParking(parking);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ParkingDetails()));
+                            },
+                          ))
+                      .toList(),
                 ),
               ),
           ],

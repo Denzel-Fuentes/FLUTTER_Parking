@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/context/Garage.dart';
 import 'package:parking_app/models/Offer.dart';
 import 'package:parking_app/repositories/offer.dart';
-
 
 class AddOfferScreen extends StatefulWidget {
   final bool isPreviewMode;
 
-  const AddOfferScreen({super.key,this.isPreviewMode = false});
+  const AddOfferScreen({super.key, this.isPreviewMode = false});
   @override
   _AddOfferScreenState createState() => _AddOfferScreenState();
 }
@@ -19,17 +19,28 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
   TextEditingController widthController = TextEditingController();
   TextEditingController lengthController = TextEditingController();
 
-  void saveOffer() async{
+  void saveOffer() async {
     print('Precio: $price bs');
     print('Descripción: ${descriptionController.text}');
     print('Alto: ${heightController.text} cm');
     print('Ancho: ${widthController.text} cm');
     print('Largo: ${lengthController.text} cm');
     print('Precio es por: ${pricingType == "daily" ? "día" : "hora"}');
-
-    if (widget.isPreviewMode){
-      Offer newOffer = Offer(parkingId: "0", price: price, description: descriptionController.text, title: "", high: double.parse(heightController.text), wide: double.parse(widthController.text), long: double.parse(lengthController.text), state: "LIBRE", type: pricingType!);
-      Navigator.pop(context,newOffer);
+    Offer newOffer = Offer(
+          parkingId: widget.isPreviewMode ? "0" : ParkingManager.getCurrentParking!.id!,
+          price: price,
+          description: descriptionController.text,
+          title: "",
+          high: double.parse(heightController.text),
+          wide: double.parse(widthController.text),
+          long: double.parse(lengthController.text),
+          state: "LIBRE",
+          type: pricingType!);
+   
+    if (widget.isPreviewMode) {
+        Navigator.pop(context, newOffer);
+    } else {
+      await OfferRepository().create(newOffer);
     }
   }
 
